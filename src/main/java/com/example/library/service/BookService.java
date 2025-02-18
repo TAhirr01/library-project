@@ -1,12 +1,14 @@
 package com.example.library.service;
 
+import com.example.library.dto.BookDTO;
 import com.example.library.entity.Book;
+import com.example.library.mapper.BookMapper;
+import com.example.library.mapper.BookRentalMapper;
 import com.example.library.repository.BookRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BookService {
@@ -17,19 +19,32 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
-    public List<Book> getAllBooks() {
-        return bookRepository.findAll();
+    public List<BookDTO> getAllBooks() {
+       List<Book> books=bookRepository.findAll();
+       return BookMapper.toBookDTOList(books);
     }
 
-    public Optional<Book> getBookById(Long id) {
-        return bookRepository.findById(id);
+    public BookDTO getBookById(Long id) {
+        Book book= bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Kitab tapılmadı, ID:"+id));
+        return BookMapper.toBookDTO(book);
     }
 
-    public Book saveBook(Book book) {
+    public Book addBook(Book book) {
         return bookRepository.save(book);
     }
 
+    public Book updateBook(Book book,Long id) {
+        Book updatedBook= bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Kitab tapılmadı, ID:"+id));
+        updatedBook.setTitle(book.getTitle());
+        updatedBook.setAuthor(book.getAuthor());
+        updatedBook.setPublicationYear(book.getPublicationYear());
+        book.setAvailableCopies(book.getAvailableCopies());
+
+        return bookRepository.save(updatedBook);
+    }
+
     public void deleteBook(Long id) {
+        bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Kitab tapılmadı, ID:"+id));
         bookRepository.deleteById(id);
     }
 

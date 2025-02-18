@@ -1,8 +1,11 @@
 package com.example.library.controller;
 
+import com.example.library.dto.BookDTO;
 import com.example.library.entity.Book;
 import com.example.library.service.BookService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
@@ -13,40 +16,35 @@ public class BookController {
 
     private final BookService bookService;
 
-    @Autowired
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }
 
     @GetMapping
-    public List<Book> getAllBooks() {
-        return bookService.getAllBooks();
+    public ResponseEntity<List<BookDTO>> getAllBooks() {
+        return ResponseEntity.ok(bookService.getAllBooks());
     }
+
 
     @GetMapping("/{id}")
-    public Optional<Book> getBookById(@PathVariable Long id) {
-        return bookService.getBookById(id);
+    public ResponseEntity<BookDTO> getBook(@PathVariable Long id) {
+        return ResponseEntity.ok(bookService.getBookById(id));
     }
 
+
     @PostMapping
-    public Book addBook(@RequestBody Book book) {
-        return bookService.saveBook(book);
+    public ResponseEntity<Book> createBook(@Valid @RequestBody Book book) {
+        return ResponseEntity.ok(bookService.addBook(book));
     }
 
     @PutMapping("/{id}")
-    public Book updateBook(@RequestBody Book book,@PathVariable Long id){
-        Book updatedBook=bookService.getBookById(id).orElseThrow();
-        updatedBook.setTitle(book.getTitle());
-        updatedBook.setAuthor(book.getAuthor());
-        updatedBook.setGenre(book.getGenre());
-        updatedBook.setIsbn(book.getIsbn());
-        updatedBook.setPublicationYear(book.getPublicationYear());
-        updatedBook.setAvailableCopies(book.getAvailableCopies());
-        return bookService.saveBook(updatedBook);
+    public ResponseEntity<Book> updateBook(@Valid @RequestBody Book book,@PathVariable Long id){
+        return ResponseEntity.ok(bookService.updateBook(book,id));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteBook(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
+        return ResponseEntity.noContent().build();
     }
 }

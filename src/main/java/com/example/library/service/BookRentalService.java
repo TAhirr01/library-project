@@ -1,8 +1,10 @@
 package com.example.library.service;
 
+import com.example.library.dto.BookRentalDTO;
 import com.example.library.entity.Book;
 import com.example.library.entity.BookRental;
 import com.example.library.entity.User;
+import com.example.library.mapper.BookRentalMapper;
 import com.example.library.repository.BookRentalRepository;
 import com.example.library.repository.BookRepository;
 import com.example.library.repository.UserRepository;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BookRentalService {
@@ -20,7 +23,6 @@ public class BookRentalService {
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
 
-    @Autowired
     public BookRentalService(BookRentalRepository rentalRepository,
                              UserRepository userRepository,
                              BookRepository bookRepository) {
@@ -29,25 +31,45 @@ public class BookRentalService {
         this.bookRepository = bookRepository;
     }
 
-    public BookRental rentBook(Long userId, Long bookId) {
-        Optional<User> user = userRepository.findById(userId);
-        Optional<Book> book = bookRepository.findById(bookId);
+    public List<BookRentalDTO> getAllRentals() {
+        List<BookRental> rentals = rentalRepository.findAll();
+        return rentals.stream()
+                .map(BookRentalMapper::toBookRentalDTO)
+                .collect(Collectors.toList());
+    }
 
-        if (user.isPresent() && book.isPresent()) {
-            BookRental rental = new BookRental();
-            rental.setUser(user.get());
-            rental.setBook(book.get());
-            rental.setRentalDate(LocalDate.now());
-            return rentalRepository.save(rental);
+    public BookRentalDTO rentBook(Long userId, Long bookId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("İstifadəçi tapılmadı"));
+        Book book = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Kitab tapılmadı"));
+
+        // **Eyni kitabı iki dəfə icarəyə götürməyə icazə vermirik**
+        boolean alreadyRented = rentalRepository.existsByUserAndBook(user, book);
+        if (alreadyRented) {
+            throw new RuntimeException("Bu kitab artıq icarəyə götürülüb!");
         }
-        return null;
+
+        BookRental bookRental = new BookRental();
+        bookRental.setUser(user);
+        bookRental.setBook(book);
+        bookRental.setRentalDate(LocalDate.now());
+
+        rentalRepository.save(bookRental);
+        return BookRentalMapper.toBookRentalDTO(bookRental);
     }
 
-    public List<BookRental> getUserRentals(Long userId) {
-        return rentalRepository.findBookByUserId(userId);
+    public BookRentalDTO getRentalById(Long id) {
+        Optional<BookRental> rental = rentalRepository.findById(id);
+        return rental.map(BookRentalMapper::toBookRentalDTO).orElse(null);
     }
 
-    public void returnBook(Long rentalId) {
-        rentalRepository.deleteById(rentalId);
+    public String returnBook(Long rentalId) {
+        Optional<BookRental> rentalOpt = rentalRepository.findById(rentalId);
+        if (rentalOpt.isPresent()) {
+            rentalRepository.deleteById(rentalId);
+            return "Kitab uğurla qaytarıldı.";
+        } else {
+            throw new RuntimeException("İcarə tapılmadı!");
+        }
     }
+
 }
