@@ -38,7 +38,7 @@ public class BookService {
         updatedBook.setTitle(book.getTitle());
         updatedBook.setAuthor(book.getAuthor());
         updatedBook.setPublicationYear(book.getPublicationYear());
-        book.setAvailableCopies(book.getAvailableCopies());
+        updatedBook.setAvailableCopies(book.getAvailableCopies());
 
         return bookRepository.save(updatedBook);
     }
@@ -46,6 +46,15 @@ public class BookService {
     public void deleteBook(Long id) {
         bookRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Kitab tapılmadı, ID:"+id));
         bookRepository.deleteById(id);
+    }
+
+    public Book updateAvailableCopies(Long id, int availableCopies) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Book not found with id: " + id));
+        book.setAvailableCopies(availableCopies);
+         bookRepository.save(book);
+         return book;
+          // Əgər DTO işlədirsənsə
     }
 
 }

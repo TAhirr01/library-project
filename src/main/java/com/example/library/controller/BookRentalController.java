@@ -27,8 +27,12 @@ public class BookRentalController {
     }
 
     @PostMapping("/rent")
-    public ResponseEntity<BookRentalDTO> rentBook(@RequestParam Long userId, @RequestParam Long bookId) {
-        return ResponseEntity.ok(rentalService.rentBook(userId, bookId));
+    public ResponseEntity<?> rentBook(@RequestParam Long userId, @RequestParam Long bookId) {
+        try {
+            return ResponseEntity.ok(rentalService.rentBook(userId, bookId));
+        } catch (IllegalStateException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/{id}")

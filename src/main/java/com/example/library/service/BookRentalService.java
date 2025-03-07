@@ -4,6 +4,7 @@ import com.example.library.dto.BookRentalDTO;
 import com.example.library.entity.Book;
 import com.example.library.entity.BookRental;
 import com.example.library.entity.User;
+import com.example.library.exception.ResourceNotFoundException;
 import com.example.library.mapper.BookRentalMapper;
 import com.example.library.repository.BookRentalRepository;
 import com.example.library.repository.BookRepository;
@@ -39,22 +40,32 @@ public class BookRentalService {
     }
 
     public BookRentalDTO rentBook(Long userId, Long bookId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("İstifadəçi tapılmadı"));
-        Book book = bookRepository.findById(bookId).orElseThrow(() -> new RuntimeException("Kitab tapılmadı"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("İstifadəçi tapılmadı"));
 
-        // **Eyni kitabı iki dəfə icarəyə götürməyə icazə vermirik**
-        boolean alreadyRented = rentalRepository.existsByUserAndBook(user, book);
-        if (alreadyRented) {
-            throw new RuntimeException("Bu kitab artıq icarəyə götürülüb!");
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new ResourceNotFoundException("Kitab tapılmadı"));
+
+        // İstifadəçi artıq kitabı götürübsə, icazə verməyək
+        if (rentalRepository.existsByUserAndBook(user, book)) {
+            throw new IllegalStateException("İstifadəçi bu kitabı artıq icarəyə götürüb!");
         }
 
+        if (book.getAvailableCopies() <= 0) {
+            throw new IllegalStateException("Bu kitabdan artıq mövcud deyil!");
+        }
+
+        // Kitabı icarəyə götürək
         BookRental bookRental = new BookRental();
         bookRental.setUser(user);
         bookRental.setBook(book);
         bookRental.setRentalDate(LocalDate.now());
 
-        rentalRepository.save(bookRental);
-        return BookRentalMapper.toBookRentalDTO(bookRental);
+        book.setAvailableCopies(book.getAvailableCopies() - 1);
+        bookRepository.save(book);
+
+        BookRental savedRental = rentalRepository.save(bookRental);
+        return BookRentalMapper.toBookRentalDTO(savedRental);
     }
 
     public BookRentalDTO getRentalById(Long id) {

@@ -1,25 +1,22 @@
 package com.example.library.service;
 
 import com.example.library.dto.UserDTO;
-import com.example.library.entity.Book;
 import com.example.library.entity.User;
 import com.example.library.mapper.UserMapper;
 import com.example.library.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
-
-    @Autowired
-    public UserService(UserRepository userRepository){
-        this.userRepository=userRepository;
-    }
+    private final PasswordEncoder passwordEncoder;
 
     public List<UserDTO> getAllUsers() {
         List<User> userList= userRepository.findAll();

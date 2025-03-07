@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -46,5 +47,14 @@ public class BookController {
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         bookService.deleteBook(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/update-copies")
+    public ResponseEntity<Book> updateAvailableCopies(
+            @PathVariable Long id,
+            @RequestBody Map<String, Integer> updateData) {
+        int availableCopies = updateData.get("availableCopies");
+        Book updatedBook = bookService.updateAvailableCopies(id, availableCopies);
+        return ResponseEntity.ok(updatedBook);
     }
 }

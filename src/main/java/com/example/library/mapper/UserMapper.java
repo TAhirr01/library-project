@@ -19,8 +19,8 @@ public class UserMapper {
     public static List<UserDTO> toUserDTOList(List<User> users){
         if (users==null) return null;
         List<UserDTO> userDTOS=new ArrayList<>();
-        UserDTO dto = new UserDTO();
         for (User user:users){
+            UserDTO dto = new UserDTO();
             dto.setId(user.getId());
             dto.setFullName(user.getName());
             dto.setEmail(user.getEmail());
