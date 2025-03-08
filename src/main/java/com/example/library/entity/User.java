@@ -20,10 +20,8 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @NotBlank(message = "Ad boş ola bilməz")
     private String name;
-
     @Email(message = "Düzgün email daxil edin")
     @NotBlank(message = "Email boş ola bilməz")
     @Column(unique = true, nullable = false)

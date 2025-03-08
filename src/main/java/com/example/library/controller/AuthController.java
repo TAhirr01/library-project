@@ -2,6 +2,7 @@ package com.example.library.controller;
 
 import com.example.library.dto.AuthRequest;
 import com.example.library.dto.AuthResponse;
+import com.example.library.dto.RegisterRequest;
 import com.example.library.security.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

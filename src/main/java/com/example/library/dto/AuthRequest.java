@@ -9,9 +9,6 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AuthRequest {
-    @NotBlank(message = "Ad boş ola bilməz")
-    private String fullName;
-
     @Email(message = "Email düzgün formatda olmalıdır")
     @NotBlank(message = "Email boş ola bilməz")
     private String email;

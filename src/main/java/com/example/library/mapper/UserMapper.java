@@ -11,7 +11,7 @@ public class UserMapper {
         if (user == null) return null;
         UserDTO dto = new UserDTO();
         dto.setId(user.getId());
-        dto.setFullName(user.getName());
+        dto.setName(user.getName());
         dto.setEmail(user.getEmail());
         return dto;
     }
@@ -22,7 +22,7 @@ public class UserMapper {
         for (User user:users){
             UserDTO dto = new UserDTO();
             dto.setId(user.getId());
-            dto.setFullName(user.getName());
+            dto.setName(user.getName());
             dto.setEmail(user.getEmail());
             userDTOS.add(dto);
         }

@@ -1,6 +1,6 @@
 package com.example.library.security;
 
-import com.example.library.controller.RegisterRequest;
+import com.example.library.dto.RegisterRequest;
 import com.example.library.dto.AuthRequest;
 import com.example.library.dto.AuthResponse;
 import com.example.library.entity.User;
@@ -9,7 +9,6 @@ import com.example.library.role.Role;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,13 +25,6 @@ public class AuthService {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Bu email ilə istifadəçi artıq mövcuddur!");
         }
-
-//        var user=User.builder()
-//                        .name(request.getName())
-//                        .email(request.getEmail())
-//                        .password(passwordEncoder.encode(request.getPassword()))
-//                        .role(Role.USER).build();
-
         User user=new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());

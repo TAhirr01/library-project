@@ -3,10 +3,8 @@ package com.example.library.security;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,7 +14,6 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-//    @Value("${jwt.secret-key}") // Burada `secret-key` düzgün yazılmalıdır!
     private static final String secretKey="6kQOhzUxh9AIYjLMlrvgt6U06ISgaYnGob4ZpLE9y4A=";
 
     private Key getSignInKey() {
