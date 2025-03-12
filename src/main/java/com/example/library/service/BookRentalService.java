@@ -1,10 +1,12 @@
 package com.example.library.service;
 
+import com.example.library.dto.BookDTO;
 import com.example.library.dto.BookRentalDTO;
 import com.example.library.entity.Book;
 import com.example.library.entity.BookRental;
 import com.example.library.entity.User;
 import com.example.library.exception.ResourceNotFoundException;
+import com.example.library.mapper.BookMapper;
 import com.example.library.mapper.BookRentalMapper;
 import com.example.library.repository.BookRentalRepository;
 import com.example.library.repository.BookRepository;
@@ -83,4 +85,16 @@ public class BookRentalService {
         }
     }
 
+    public List<BookDTO> getBooksByUserId(Long id) {
+        List<Object[]> results = rentalRepository.findBooksByUserid(id);
+        return results.stream().map(obj ->
+                new BookDTO(
+                        ((Number) obj[0]).longValue(),  // ID
+                        (String) obj[1],  // Title
+                        (String) obj[2],  // Author
+                        (String) obj[3]   // Genre
+                )
+        ).collect(Collectors.toList());
+
+    }
 }

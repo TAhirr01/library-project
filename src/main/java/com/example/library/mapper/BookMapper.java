@@ -20,8 +20,8 @@ public class BookMapper {
     public static List<BookDTO> toBookDTOList(List<Book> books){
         if (books==null) return null;
         List<BookDTO> bookDTOS=new ArrayList<>();
-        BookDTO dto = new BookDTO();
         for (Book book:books){
+            BookDTO dto = new BookDTO();
             dto.setId(book.getId());
             dto.setTitle(book.getTitle());
             dto.setAuthor(book.getAuthor());
