@@ -3,21 +3,21 @@ package com.example.library.controller;
 import com.example.library.dto.UserDTO;
 import com.example.library.entity.User;
 import com.example.library.service.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
+@Tag(name = "User Controller", description = "Istifadeciler üçün API əməliyyatları")
 @RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
-
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers(){

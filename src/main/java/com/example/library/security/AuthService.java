@@ -31,7 +31,6 @@ public class AuthService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(Role.USER);
         userRepository.save(user);
-
         String token = jwtService.generateToken(user);
         return new AuthResponse(token);
     }
@@ -43,7 +42,6 @@ public class AuthService {
 
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("İstifadəçi tapılmadı!"));
-
         String token = jwtService.generateToken(user);
         return new AuthResponse(token);
     }

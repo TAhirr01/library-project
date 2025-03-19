@@ -4,6 +4,7 @@ import com.example.library.dto.AuthRequest;
 import com.example.library.dto.AuthResponse;
 import com.example.library.dto.RegisterRequest;
 import com.example.library.security.AuthService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "Auth Controller", description = "Authrization API əməliyyatları")
 @RequestMapping("/api/auth")
 public class AuthController {
     private final AuthService authService;

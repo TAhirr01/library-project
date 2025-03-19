@@ -38,6 +38,7 @@ public class JwtService {
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
+                .claim("role", userDetails.getAuthorities().stream().findFirst().get().getAuthority())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 saat
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
